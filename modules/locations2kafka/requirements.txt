@@ -14,6 +14,7 @@ importlib-resources==5.4.0
 itsdangerous==2.0.1
 Jinja2==3.0.3
 jsonschema==3.0.2
+kafka-python==2.0.2
 MarkupSafe==2.0.1
 marshmallow==3.7.1
 marshmallow-sqlalchemy==0.23.1

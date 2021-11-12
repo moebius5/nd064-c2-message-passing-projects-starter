@@ -6,19 +6,31 @@ import location_pb2
 import location_pb2_grpc
 import logging, sys
 
+from kafka import KafkaProducer
+
+TOPIC_NAME = 'locations'
+KAFKA_SERVER = 'localhost:9092'
+
+#producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER)
+
+
 class LocationServicer(location_pb2_grpc.LocationServiceServicer):
     def Create(self, request, context):
         #print("Received a message!")
         logger.info("Received a message!")
-        request_value = {
+        location_value = {
             "id": request.id,
             "person_id": request.person_id,
             "longitude": request.longitude,
             "latitude": request.latitude,
             "creation_time": request.creation_time
         }
-        print(request_value)
-        return location_pb2.LocationMessage(**request_value)
+        print(location_value)
+        return location_pb2.LocationMessage(**location_value)
+
+        #producer.send(TOPIC_NAME, b'location_value')
+        #producer.flush()
+
 
 # Some logging stuff
 logger = logging.getLogger(__name__)

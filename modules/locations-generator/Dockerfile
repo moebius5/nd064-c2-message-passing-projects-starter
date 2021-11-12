@@ -7,7 +7,8 @@ COPY requirements.txt requirements.txt
 RUN python -m pip install --upgrade pip
 RUN python -m pip install --upgrade setuptools
 RUN pip install -r requirements.txt
-RUN python -m grpc_tools.protoc -I./ --python_out=./ --grpc_python_out=./ location.proto
 
 COPY . .
+RUN python -m grpc_tools.protoc -I./ --python_out=./ --grpc_python_out=./ location.proto
+
 CMD ["python", "./writer.py"]

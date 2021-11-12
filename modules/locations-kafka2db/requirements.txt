@@ -1,0 +1,17 @@
+click==8.0.3
+Flask==2.0.2
+Flask-SQLAlchemy==2.5.1
+GeoAlchemy2==0.9.4
+greenlet==1.1.2
+itsdangerous==2.0.1
+Jinja2==3.0.3
+kafka-python==2.0.2
+MarkupSafe==2.0.1
+marshmallow==3.14.0
+marshmallow-sqlalchemy==0.26.1
+packaging==21.2
+psycopg2-binary==2.9.2
+pyparsing==2.4.7
+Shapely==1.8.0
+SQLAlchemy==1.4.27
+Werkzeug==2.0.2

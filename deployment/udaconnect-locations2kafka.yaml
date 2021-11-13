@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: udaconnect-locations2kafka
+  name: udaconnect-locations2kafka
+spec:
+  ports:
+  - name: "5005"
+    port: 5005
+    targetPort: 5005
+    nodePort: 35005
+  selector:
+    service: udaconnect-locations2kafka
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: udaconnect-locations2kafka
+  name: udaconnect-locations2kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: udaconnect-locations2kafka
+  template:
+    metadata:
+      labels:
+        service: udaconnect-locations2kafka
+    spec:
+      containers:
+      - image: moebius5/nd064-udaconnect-locations2kafka:latest
+        name: udaconnect-locations2kafka
+        imagePullPolicy: Always
+      restartPolicy: Always

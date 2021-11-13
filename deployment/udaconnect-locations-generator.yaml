@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: udaconnect-locations-generator
+  name: udaconnect-locations-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+  template:
+    metadata:
+      labels:
+        service: udaconnect-locations-generator
+    spec:
+      containers:
+      - image: moebius5/nd064-udaconnect-locations-generator:latest
+        name: udaconnect-locations-generator
+        imagePullPolicy: Always
+      restartPolicy: Always

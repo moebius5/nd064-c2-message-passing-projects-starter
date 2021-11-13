@@ -12,7 +12,7 @@ from sqlalchemy.orm import sessionmaker
 from app.config import *
 
 logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger("udaconnect-api")
+logger = logging.getLogger(__name__)
 
 #engine = create_engine('postgresql://ct_admin:wowimsosecure@localhost:32543/geoconnections')
 engine = create_engine(f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")

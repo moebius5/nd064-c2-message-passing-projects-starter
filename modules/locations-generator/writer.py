@@ -4,13 +4,14 @@ import location_pb2
 import location_pb2_grpc
 import logging, sys
 
+
 def writer():
     """
     Assume we get raw location data from sensors, normalize it in compliance with DB table records and finally send in a message,
     this function manually generates dummy 5 location_id's from  id 100 to 105
     """
 
-    channel = grpc.insecure_channel("localhost:5005")
+    channel = grpc.insecure_channel("localhost:35005")
     stub = location_pb2_grpc.LocationServiceStub(channel)
 
     for i in range(100,106):

@@ -136,7 +136,7 @@ id  | person_id |                 coordinate                 |    creation_time
 
 ### Verifying it Works
 Once the project is up and running, you should be able to see 7 deployments and 9 services in Kubernetes:
-`kubectl get pods` and `kubectl get services` - should return:
+`kubectl get deployment` and `kubectl get services` - should return:
 NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
 postgres                         1/1     1            1           21h
 udaconnect-app                   1/1     1            1           14h

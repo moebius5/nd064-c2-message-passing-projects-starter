@@ -11,7 +11,7 @@ def writer():
     this function manually generates dummy 5 location_id's from  id 100 to 105
     """
 
-    channel = grpc.insecure_channel("localhost:35005")
+    channel = grpc.insecure_channel("localhost:30005")
     stub = location_pb2_grpc.LocationServiceStub(channel)
 
     for i in range(100,106):

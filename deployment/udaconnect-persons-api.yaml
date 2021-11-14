@@ -6,9 +6,9 @@ metadata:
   name: udaconnect-persons-api
 spec:
   ports:
-  - name: "5000"
-    port: 5000
-    targetPort: 5000
+  - name: "30001"
+    port: 30001
+    targetPort: 30001
     nodePort: 30001
   selector:
     service: udaconnect-persons-api

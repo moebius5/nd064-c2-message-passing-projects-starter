@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    service: udaconnect-locations-generator
+    app: udaconnect-locations-generator
   name: udaconnect-locations-generator
 spec:
   replicas: 1
@@ -12,10 +12,17 @@ spec:
   template:
     metadata:
       labels:
-        service: udaconnect-locations-generator
+        app: udaconnect-locations-generator
     spec:
       containers:
       - image: moebius5/nd064-udaconnect-locations-generator:latest
         name: udaconnect-locations-generator
         imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "64m"
+          limits:
+            memory: "256Mi"
+            cpu: "256m"
       restartPolicy: Always

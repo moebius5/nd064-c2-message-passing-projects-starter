@@ -9,7 +9,7 @@ spec:
   - name: "5005"
     port: 5005
     targetPort: 5005
-    nodePort: 35005
+    nodePort: 30005
   selector:
     service: udaconnect-locations2kafka
   type: NodePort
@@ -34,4 +34,11 @@ spec:
       - image: moebius5/nd064-udaconnect-locations2kafka:latest
         name: udaconnect-locations2kafka
         imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "64m"
+          limits:
+            memory: "256Mi"
+            cpu: "256m"
       restartPolicy: Always

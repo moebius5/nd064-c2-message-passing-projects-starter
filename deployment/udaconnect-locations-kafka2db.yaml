@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    service: udaconnect-locations-kafka2db
+    app: udaconnect-locations-kafka2db
   name: udaconnect-locations-kafka2db
 spec:
   replicas: 1
@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        service: udaconnect-locations-kafka2db
+        app: udaconnect-locations-kafka2db
     spec:
       containers:
       - image: moebius5/nd064-udaconnect-locations-kafka2db:latest

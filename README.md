@@ -18,6 +18,8 @@ To do so, ***you will refactor this application into a microservice architecture
 * [Vagrant](https://www.vagrantup.com/) - Tool for managing virtual deployed environments
 * [VirtualBox](https://www.virtualbox.org/) - Hypervisor allowing you to run multiple operating systems
 * [K3s](https://k3s.io/) - Lightweight distribution of K8s to easily develop against a local cluster
+* [gRPC](https://grpc.io/) - is a modern open source high performance Remote Procedure Call (RPC) framework that can run in any environment. It can efficiently connect services in and across data centers with pluggable support for load balancing, tracing, health checking and authentication.
+* [Apache Kafka](https://kafka.apache.org/) - is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.
 
 ## Running the app
 The project has been set up such that you should be able to have the project up and running with Kubernetes.
@@ -81,7 +83,7 @@ Afterwards, you can test that `kubectl` works by running a command like `kubectl
 1. `kubectl apply -f pre-deployment/` - Let's first set up DB and Kafka environment, please invoke all subsequent commands as root user or with sudo
 2. `sh scripts/run_db_command.sh <POSTGRES_POD_NAME>` - Seed your database against the `postgres` pod. (`kubectl get pods` will give you that postgres pod's name)
 3. `./scripts/check_locations_records.sh <POSTGRES_POD_NAME>` - Let's check 'location' table records (let's check it before we add new dummy records), sample output:
-./scripts/check_locations_records.sh postgres-5f676c995d-9jvx2
+```./scripts/check_locations_records.sh postgres-5f676c995d-9jvx2
 id  | person_id |                 coordinate                 |    creation_time
 -----+-----------+--------------------------------------------+---------------------
  29 |         1 | 010100000000ADF9F197925EC0FDA19927D7C64240 | 2020-08-18 10:37:06
@@ -94,26 +96,27 @@ id  | person_id |                 coordinate                 |    creation_time
  67 |         8 | 010100000097FDBAD39D925EC0D00A0C59DDC64240 | 2020-07-07 10:37:06
  68 |         6 | 010100000097FDBAD39D925EC0D00A0C59DDC64240 | 2020-08-15 10:37:06
 (39 rows)
-
-4. `export KAFKA_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=kafka,app.kubernetes.io/instance=kafka,app.kubernetes.io/component=kafka" -o jsonpath="{.items[0].metadata.name}")` - before we deploy apps we should set up Kafka services and create topic 'locations'
+```
+4. `export KAFKA_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=kafka,app.kubernetes.io/instance=kafka,app.kubernetes.io/component=kafka" -o jsonpath="{.items[0].metadata.name}")` - before we deploy apps we should set up Kafka services and create topic 'locations', let's quickly find out kafka broker's pod name
 5. `kubectl exec -it $KAFKA_POD_NAME -- kafka-topics.sh --create --bootstrap-server kafka-headless:9092 --replication-factor 1 --partitions 1 --topic locations` - create 'locations' topic in Kafka
 6. `kubectl exec -it $KAFKA_POD_NAME -- kafka-topics.sh --describe --topic locations --bootstrap-server kafka-headless:9092` - fetch the describe output of 'locations' topic
 7. `kubectl exec -it $KAFKA_POD_NAME -- kafka-console-consumer.sh --topic locations --from-beginning --bootstrap-server localhost:9092` - for the purpose of initial testing let's start consumer client, preferably starting the separate cli ssh/console session, for the next 2 steps open an additional ssh/cli session
-8. `export KAFKA_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=kafka,app.kubernetes.io/instance=kafka,app.kubernetes.io/component=kafka" -o jsonpath="{.items[0].metadata.name}")`
-9. `kubectl exec -it $KAFKA_POD_NAME -- kafka-console-producer.sh --topic locations --bootstrap-server kafka-headless:9092` - and let's type some message like "hi, I am here" and in consumer cli session above we would see the corresponding output of a transmissioned message. Please, for the next tests stay consumer cli session opened, terminate that producer session by invoking "Ctrl+C" 
+8. `export KAFKA_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=kafka,app.kubernetes.io/instance=kafka,app.kubernetes.io/component=kafka" -o jsonpath="{.items[0].metadata.name}")` - you can paste the pod name from above or re-invoke that in that new ssh/cli session
+9. `kubectl exec -it $KAFKA_POD_NAME -- kafka-console-producer.sh --topic locations --bootstrap-server kafka-headless:9092` - and let's type some message like "hi, I am here" and in consumer cli session above we would see the corresponding output of a transmissioned message. Please, for the next tests leave consumer cli session opened, terminate that producer session by invoking "Ctrl+C" 
 10. `kubectl apply -f deployment/` - after we ensured the Kafka services are up and set up, let's apply the main deployment apps' manifests
 11. `kubectl get pods` - ensure all services are in Running state and the abovementioned consumer cli session is still working
 12. `kubectl apply -f post-deployment/` - let's deploy and start injecting 6 sample location records by deploying 'locations-generator' microservice
 13. Check the consumer cli session, it will show up 6 new records:
-{"id": 100, "person_id": 9, "longitude": "-106.5719566", "latitude": "35.0585136", "creation_time": "2021-11-06T10:10:10"}
+```{"id": 100, "person_id": 9, "longitude": "-106.5719566", "latitude": "35.0585136", "creation_time": "2021-11-06T10:10:10"}
 {"id": 101, "person_id": 9, "longitude": "-106.5719566", "latitude": "35.0585136", "creation_time": "2021-11-06T10:10:10"}
 {"id": 102, "person_id": 9, "longitude": "-106.5719566", "latitude": "35.0585136", "creation_time": "2021-11-06T10:10:10"}
 {"id": 103, "person_id": 9, "longitude": "-106.5719566", "latitude": "35.0585136", "creation_time": "2021-11-06T10:10:10"}
 {"id": 104, "person_id": 9, "longitude": "-106.5719566", "latitude": "35.0585136", "creation_time": "2021-11-06T10:10:10"}
 {"id": 105, "person_id": 9, "longitude": "-106.5719566", "latitude": "35.0585136", "creation_time": "2021-11-06T10:10:10"}
+```
 
 14. `./scripts/check_locations_records.sh <POSTGRES_POD_NAME>` - check if transmitted 6 location records are in DB 'locations' table, sample output:
-./scripts/check_locations_records.sh postgres-5f676c995d-9jvx2
+```./scripts/check_locations_records.sh postgres-5f676c995d-9jvx2
  id  | person_id |                 coordinate                 |    creation_time
 -----+-----------+--------------------------------------------+---------------------
   29 |         1 | 010100000000ADF9F197925EC0FDA19927D7C64240 | 2020-08-18 10:37:06
@@ -130,13 +133,14 @@ id  | person_id |                 coordinate                 |    creation_time
  104 |         9 | 0101000000842FA75F7D874140CEEEDAEF9AA45AC0 | 2021-11-06 10:10:10
  105 |         9 | 0101000000842FA75F7D874140CEEEDAEF9AA45AC0 | 2021-11-06 10:10:10
 (45 rows)
-
--, and that it, Locations entity microservices worked out.
+```
+-, and that it, new records added to DB, Locations entity microservices worked out.
 
 
 ### Verifying it Works
 Once the project is up and running, you should be able to see 7 deployments and 9 services in Kubernetes:
 `kubectl get deployment` and `kubectl get services` - should return:
+```
 NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
 postgres                         1/1     1            1           21h
 udaconnect-app                   1/1     1            1           14h
@@ -145,7 +149,8 @@ udaconnect-locations-kafka2db    1/1     1            1           14h
 udaconnect-locations-generator   1/1     1            1           13h
 udaconnect-connections-api       1/1     1            1           13h
 udaconnect-persons-api           1/1     1            1           12h
-
+```
+```
 NAME                         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
 kubernetes                   ClusterIP   10.43.0.1       <none>        443/TCP                      13d
 kafka-zookeeper-headless     ClusterIP   None            <none>        2181/TCP,2888/TCP,3888/TCP   21h
@@ -157,7 +162,7 @@ postgres                     NodePort    10.43.10.179    <none>        5432:3207
 udaconnect-connections-api   NodePort    10.43.43.82     <none>        5000:30002/TCP               14h
 udaconnect-locations2kafka   NodePort    10.43.51.141    <none>        5005:30005/TCP               14h
 udaconnect-persons-api       NodePort    10.43.251.107   <none>        30001:30001/TCP              13h
-
+```
 
 
 These pages should also load on your web browser:

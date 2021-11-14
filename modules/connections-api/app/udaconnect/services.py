@@ -35,7 +35,7 @@ class ConnectionService:
 
         # Refactored part, use RESTapi request to persons-api microservice
         #response = requests.get("http://localhost:6000/api/persons")
-        response = requests.get("http://localhost:30001/api/persons")
+        response = requests.get("http://udaconnect-persons-api:30001/api/persons")
         persons_data_json = response.json()
         persons_data = []
         for person in persons_data_json:

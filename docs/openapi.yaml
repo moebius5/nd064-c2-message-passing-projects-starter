@@ -75,6 +75,24 @@ paths:
         required: true
         schema:
           type: string
+      - in: query
+        description: Start date
+        name: start_date
+        required: true
+        schema:
+          type: string
+      - in: query
+        description: End date
+        name: end_date
+        required: true
+        schema:
+          type: string
+      - in: query
+        description: Distance
+        name: distance
+        required: true
+        schema:
+          type: integer
     get:
       responses:
         "200":

@@ -8,6 +8,7 @@ import location_pb2_grpc
 import logging, sys
 
 from kafka import KafkaProducer
+from grpc_reflection.v1alpha import reflection
 
 TOPIC_NAME = 'locations'
 KAFKA_SERVER = 'kafka:9092'
@@ -46,6 +47,12 @@ logger.addHandler(stdouth)
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=2))
 location_pb2_grpc.add_LocationServiceServicer_to_server(LocationServicer(), server)
 
+# enabling reflection service
+SERVICE_NAMES = (
+    location_pb2.DESCRIPTOR.services_by_name['LocationServicer'].full_name,
+    reflection.SERVICE_NAME,
+)
+reflection.enable_server_reflection(SERVICE_NAMES, server)
 
 logger.info("Server starting on port 5005...")
 server.add_insecure_port("[::]:5005")

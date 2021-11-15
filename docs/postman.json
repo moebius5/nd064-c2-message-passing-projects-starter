@@ -2,52 +2,29 @@
 	"info": {
 		"_postman_id": "a94bc4dd-7117-442e-969b-e4a064938eb2",
 		"name": "after_refactor",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "persons",
+			"name": "/api/persons",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": {
-					"raw": "http://localhost:30001/api/persons",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "30001",
-					"path": [
-						"api",
-						"persons"
-					]
-				}
+				"url": "http://localhost:30001/api/persons"
 			},
 			"response": []
 		},
 		{
-			"name": "persons/person_id",
+			"name": "/persons/person_id",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": {
-					"raw": "http://localhost:30001/api/persons/5",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "30001",
-					"path": [
-						"api",
-						"persons",
-						"5"
-					]
-				}
+				"url": "http://localhost:30001/api/persons/5"
 			},
 			"response": []
 		},
 		{
-			"name": "get connection",
+			"name": "/persons/<person_id>/connection",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -79,6 +56,24 @@
 						}
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "/persons",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 10,\n  \"first_name\": \"John\",\n  \"last_name\": \"Smith\",\n  \"company_name\": \"Red & Becker's\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:30001/api/persons"
 			},
 			"response": []
 		}

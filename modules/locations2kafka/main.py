@@ -11,8 +11,8 @@ from kafka import KafkaProducer
 from grpc_reflection.v1alpha import reflection
 
 TOPIC_NAME = 'locations'
-KAFKA_SERVER = 'localhost:9092'
-#KAFKA_SERVER = 'kafka:9092'
+#KAFKA_SERVER = 'localhost:9092'
+KAFKA_SERVER = 'kafka:9092'
 
 producer = KafkaProducer(bootstrap_servers=KAFKA_SERVER, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 

@@ -1,0 +1,152 @@
+openapi: 3.0.0
+info:
+  title: UdaConnect Persons and Person Interconnections API
+  version: 0.1.0
+  contact:
+    name: Muhammet Berdimyradov
+    email: muhamed.berdimuradov@gmail.com
+tags:
+  - name: UdaConnect
+    description: Connections via geolocation.
+paths:
+  /api/persons:
+    servers:
+      - url: http://localhost:30001/
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonSchema'
+      operationId: get_persons_resource
+      tags:
+        - UdaConnect
+      summary: Retrieve list of all persons
+      description: Returns a json formatted list of persons
+    post:
+      description: Expects a json formatted person data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonSchema'
+        description: Person's data to add
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonSchema'
+  "/api/persons/{person_id}":
+    servers:
+      - url: http://localhost:30001/
+    parameters:
+      - in: path
+        description: Unique ID for a given Person
+        name: person_id
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonSchema'
+      operationId: get_person_resource
+      tags:
+        - UdaConnect
+      summary: Retrieves specified person
+      description: Retrieves a json formatted person data by specifying its ID
+  "/api/persons/{person_id}/connection":
+    servers:
+      - url: http://localhost:30002/
+    parameters:
+      - in: path
+        description: Unique ID for a given Person
+        name: person_id
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSchema'
+      operationId: get_person_connections_resource
+      tags:
+        - UdaConnect
+      summary: Retrieves specified person
+      description: Retrieves a json formatted person data by specifying its ID
+components:
+  schemas:
+    PersonSchema:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - company_name
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 10
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Smith
+        company_name:
+          type: string
+          example: Red & Becker's
+    LocationSchema:
+      type: object
+      required:
+        - person_id
+        - longitude
+        - latitude
+        - creation_time
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 29
+        person_id:
+          type: integer
+          format: int32
+          example: 10
+        longitude:
+          type: string
+          example: -122.290883
+        latitude:
+          type: string
+          example: 37.55363
+        creation_time: 
+          type: string
+          example: "2020-07-07T10:37:06"
+    ConnectionSchema:
+      type: array
+      items:
+        properties:
+          person:
+            $ref: '#/components/schemas/PersonSchema'
+          location:
+            $ref: '#/components/schemas/LocationSchema'
+
+
+
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/moebius5/udaconnect-api-doc/0.1.0

@@ -10,17 +10,18 @@ TOPIC_NAME = 'locations'
 
 
 def main():
-    consumer = KafkaConsumer(bootstrap_servers=KAFKA_SERVER,
-                             value_deserializer=lambda m: json.loads(m.decode('utf-8')))
-    consumer.subscribe([TOPIC_NAME])
-    try:
-        for message in consumer:
-            location=message.value
-            LocationService.create(location)
-            logger.info("Location data:" + str(location) + "saved to database.")
-    except KeyboardInterrupt:
-        consumer.unsubscribe()
-        consumer.close()
+    while True:
+        consumer = KafkaConsumer(bootstrap_servers=KAFKA_SERVER,
+                                 value_deserializer=lambda m: json.loads(m.decode('utf-8')))
+        consumer.subscribe([TOPIC_NAME])
+        try:
+            for message in consumer:
+                location=message.value
+                LocationService.create(location)
+                logger.info("Location data:" + str(location) + "saved to database.")
+        except KeyboardInterrupt:
+            consumer.unsubscribe()
+            consumer.close()
 
 # Some logging stuff
 logger = logging.getLogger(__name__)
